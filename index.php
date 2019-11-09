@@ -18,10 +18,7 @@
     $id = $obj -> id;
     $db -> query("update karijera set broj_dana=(select datediff(do, od) + 1 where id='$id') where id='$id'");
   }
-
-?>
-
-<?php
+  
   //   Now goes HTML with CSS styling
  ?>
 <!DOCTYPE html>
