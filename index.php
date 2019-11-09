@@ -72,7 +72,7 @@
           $do = $obj -> do;
           $beneficija = $obj -> beneficija;
 
-      //   Related to amount of benefits, defines coefficient for multiplication of days
+      //   Related to amount of acceleration, defines coefficient for multiplication of days
 
           if($beneficija == 15){
             $koeficijent = 1 + 1/4;
@@ -109,7 +109,7 @@
 
         <?php
 
-        //   Using functions for converting days to years, months and days, now for service with benefits
+        //   Using functions for converting days to years, months and days, now for service with acceleration
 
           $razlika = beneficiraniRS($razlika, $koeficijent);
           $godina = godina($db, $razlika);
@@ -139,7 +139,7 @@
 
          <?php
 
-         //   Summary of service without benefits
+         //   Summary of service without acceleration
 
            $razlika = $efektivniRS;
            $godina = godina($db, $razlika);
@@ -157,7 +157,7 @@
 
          <?php
 
-         //   Summary of service with benefits
+         //   Summary of service with acceleration
 
            $razlika = $beneficiraniRS;
            $godina = godina($db, $razlika);
