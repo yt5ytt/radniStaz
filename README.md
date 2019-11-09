@@ -8,3 +8,5 @@ According to Retirement law of Republic of Serbia, people who has job with accel
 My 53rd birthday is May 24th, 2029., so this table is data of my career in Serbian arm forces without and with accelerated coefficient.
 
 When I finish with it, I hope to work in IT company somewhere abroad... I'd like to go to United Kingdom or to Spain at Mediteranian coast, but if not, everywhere else will be good. I'd like to upgrade myself with programing skills in some big IT company.
+
+Proba promene...
