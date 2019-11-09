@@ -1,0 +1,73 @@
+*{
+  margin: 0;
+  padding; 0;
+}
+
+body{
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+#tabela{
+  width: 98%;
+  margin: 1% auto;
+  text-align: center;
+}
+
+.redNaslova{
+  width: 100%;
+  line-height: 3em;
+}
+
+.od, .do, .beneficija{
+  width: 16%;
+  float: left;
+}
+
+.efektivniRS, .penzijskiRS{
+  width: 25%;
+  float: left;
+  outline: 1px dotted grey;
+}
+
+.naslov, .GMD{
+  line-height: 1.5em;
+}
+
+.godina, .meseci, .dana{
+  line-height: 1.5em;
+  width: 33.3%;
+  float: left;
+}
+
+.red{
+  width: 100%;
+  line-height: 1.5em;
+}
+
+.ukupno{
+  width: 45%;
+  float: left;
+  text-align: right;
+  font-size: 1.5em;
+  margin-right: 3%;
+}
+
+.poslednjiRed{
+  line-height: 5em;
+  font-size: 2em;
+  text-align: center;
+  width: 100%;
+}
+
+.poslednjiRed span{
+  font-size: 4em;
+}
+
+#ostatak{
+  width: 100%;
+  font-size: 9em;
+  text-align: center;
+  margin: 5% auto;
+}
