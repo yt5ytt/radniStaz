@@ -2,11 +2,15 @@
   include("funkcije.php");
   include("db.php");
 
+  //   Update last date to be today
+
   $upit = "select id from karijera order by id desc limit 1";
   $rez = $db -> query($upit);
   $obj = mysqli_fetch_object($rez);
   $id = $obj -> id;
   $db -> query("update karijera set do=now() where id='$id'");
+
+  //   Update of column broj_dana in table
 
   $upit = "select id, od, do from karijera";
   $rez = $db -> query($upit);
@@ -16,6 +20,10 @@
   }
 
 ?>
+
+<?php
+  //   Now goes HTML with CSS styling
+ ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -54,12 +62,17 @@
       </div>
 
       <?php
+
+      //   Reading data from DB
+
         $upis = "select * from karijera";
         $rez = $db -> query($upis);
         while($obj = mysqli_fetch_object($rez)){
           $od = $obj -> od;
           $do = $obj -> do;
           $beneficija = $obj -> beneficija;
+
+      //   Related to amount of benefits, defines coefficient for multiplication of days
 
           if($beneficija == 15){
             $koeficijent = 1 + 1/4;
@@ -69,19 +82,12 @@
             $koeficijent = 2;
           }
 
-          $rez1600 = $db -> query("select to_days(str_to_date('1600-01-01', '%Y-%m-%d')) as dani1600");
-          $obj1600 = mysqli_fetch_object($rez1600);
-          $dani1600 = $obj1600 -> dani1600;
+      //   Using functions for converting days to years, months and days
 
           $razlika = $obj -> broj_dana;
-          $datumTemp = $db -> query("select extract(year from from_days($razlika + $dani1600)) - 1600 as godina, extract(month from from_days($razlika + $dani1600)) - 1 as meseci, extract(day from from_days($razlika + $dani1600)) - 1 as dana");
-          $objKraj = mysqli_fetch_object($datumTemp);
-            $godina = $objKraj -> godina;
-            $meseci = $objKraj -> meseci;
-            $dana = $objKraj -> dana;
-          /*$godina = godina($razlika);
-          $meseci = meseci($razlika, $godina);
-          $dana = dana($razlika, $godina, $meseci);*/
+          $godina = godina($db, $razlika);
+          $meseci = meseci($db, $razlika);
+          $dana = dana($db, $razlika);
           @$efektivniRS += $razlika;
 
        ?>
@@ -102,15 +108,13 @@
         </div>
 
         <?php
+
+        //   Using functions for converting days to years, months and days, now for service with benefits
+
           $razlika = beneficiraniRS($razlika, $koeficijent);
-          $datumTemp = $db -> query("select extract(year from from_days($razlika + $dani1600)) - 1600 as godina, extract(month from from_days($razlika + $dani1600)) - 1 as meseci, extract(day from from_days($razlika + $dani1600)) - 1 as dana");
-          $objKraj = mysqli_fetch_object($datumTemp);
-            $godina = $objKraj -> godina;
-            $meseci = $objKraj -> meseci;
-            $dana = $objKraj -> dana;
-          /*$godina = godina($razlika);
-          $meseci = meseci($razlika, $godina);
-          $dana = dana($razlika, $godina, $meseci);*/
+          $godina = godina($db, $razlika);
+          $meseci = meseci($db, $razlika);
+          $dana = dana($db, $razlika);
          ?>
 
         <div class="penzijskiRS">
@@ -134,15 +138,13 @@
          </div>
 
          <?php
+
+         //   Summary of service without benefits
+
            $razlika = $efektivniRS;
-           $datumTemp = $db -> query("select extract(year from from_days($razlika + $dani1600)) - 1600 as godina, extract(month from from_days($razlika + $dani1600)) - 1 as meseci, extract(day from from_days($razlika + $dani1600)) - 1 as dana");
-           $objKraj = mysqli_fetch_object($datumTemp);
-             $godina = $objKraj -> godina;
-             $meseci = $objKraj -> meseci;
-             $dana = $objKraj -> dana;
-           /*$godina = godina($razlika);
-           $meseci = meseci($razlika, $godina);
-           $dana = dana($razlika, $godina, $meseci);*/
+           $godina = godina($db, $razlika);
+           $meseci = meseci($db, $razlika);
+           $dana = dana($db, $razlika);
           ?>
 
          <div class="efektivniRS">
@@ -154,15 +156,13 @@
          </div>
 
          <?php
+
+         //   Summary of service with benefits
+
            $razlika = $beneficiraniRS;
-           $datumTemp = $db -> query("select extract(year from from_days($razlika + $dani1600)) - 1600 as godina, extract(month from from_days($razlika + $dani1600)) - 1 as meseci, extract(day from from_days($razlika + $dani1600)) - 1 as dana");
-           $objKraj = mysqli_fetch_object($datumTemp);
-             $godina = $objKraj -> godina;
-             $meseci = $objKraj -> meseci;
-             $dana = $objKraj -> dana;
-           /*$godina = godina($razlika);
-           $meseci = meseci($razlika, $godina);
-           $dana = dana($razlika, $godina, $meseci);*/
+           $godina = godina($db, $razlika);
+           $meseci = meseci($db, $razlika);
+           $dana = dana($db, $razlika);
           ?>
 
          <div class="penzijskiRS">
@@ -178,34 +178,18 @@
     </div>
 
     <?php
+
+    //   Calculating how many time is needed for retirement according to Retirement law of Republic of Serbia
+
       $now = date("Y-m-d");
       $penzija = "2029-05-24";
 
       $brojDana = $db -> query("select datediff(str_to_date('$penzija', '%Y-%m-%d'), now()) as brojDana");
       $objDana = mysqli_fetch_object($brojDana);
-      $danaBroj = $objDana -> brojDana;
-
-
-      $rezTemporary = $db -> query("
-      select extract(year from from_days(days)) - 1600 as years,
-      extract(month from from_days(days)) - 1 as months,
-      extract(day from from_days(days)) - 1 as days
-      from (select '$danaBroj' + to_days(str_to_date('1600-01-01', '%Y-%m-%d')) as days) as b
-        ");
-
-      $objTemporary = mysqli_fetch_object($rezTemporary);
-      $ukupnoDana = $danaBroj;
-      $godina = $objTemporary -> years;
-      $meseci = $objTemporary -> months;
-      $dana =  $objTemporary -> days;
-
-      /*$rez = $db -> query("select datediff('$penzija', now()) + 1 as brojDana");
-      $obj = mysqli_fetch_object($rez);
-      $razlika = $obj -> brojDana;
-      $godina = godina($razlika);
-      $meseci = meseci($razlika, $godina);
-      $dana = dana($razlika, $godina, $meseci);
-      $ukupnoDana = $razlika;*/
+      $razlika = $objDana -> brojDana;
+      $godina = godina($db, $razlika);
+      $meseci = meseci($db, $razlika);
+      $dana = dana($db, $razlika);
      ?>
 
      <div class="poslednjiRed">
@@ -213,7 +197,7 @@
      </div>
 
     <div id="ostatak">
-      JOŠ <b><?php echo $ukupnoDana; ?></b> DANA
+      JOŠ <b><?php echo $razlika; ?></b> DANA
     </div>
   </body>
 </html>
